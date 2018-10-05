@@ -3,7 +3,7 @@
 # https://www.c-rieger.de
 # https://github.com/riegercloud
 # INSTALL-NEXTCLOUD.SH
-# Version 6.1 (ARM64 compatible)
+# Version 6.1 (AMD64)
 # OpenSSL 1.1.1, TLSv1.3
 # October, 05th 2018
 ################################################
