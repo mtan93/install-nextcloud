@@ -651,6 +651,14 @@ redis-cli -s /var/run/redis/redis-server.sock <<EOF
 FLUSHALL
 quit
 EOF
+/usr/sbin/service nginx stop
+echo " Run DB optimizations twice:"
+echo ""
+sudo -u www-data php /var/www/nextcloud/occ db:add-missing-indices
+sudo -u www-data php /var/www/nextcloud/occ db:add-missing-indices
+sudo -u www-data php /var/www/nextcloud/occ db:convert-filecache-bigint
+sudo -u www-data php /var/www/nextcloud/occ db:convert-filecache-bigint
+/usr/sbin/service nginx start
 nextcloud_scan_data
 restart_all_services
 clear
