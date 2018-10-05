@@ -652,12 +652,14 @@ FLUSHALL
 quit
 EOF
 /usr/sbin/service nginx stop
-echo " Run DB optimizations twice:"
+clear
+echo ""
+echo "Issue Nextcloud-DB optimizations:"
 echo ""
 sudo -u www-data php /var/www/nextcloud/occ db:add-missing-indices
-sudo -u www-data php /var/www/nextcloud/occ db:add-missing-indices
+echo ""
 sudo -u www-data php /var/www/nextcloud/occ db:convert-filecache-bigint
-sudo -u www-data php /var/www/nextcloud/occ db:convert-filecache-bigint
+echo ""
 /usr/sbin/service nginx start
 nextcloud_scan_data
 restart_all_services
