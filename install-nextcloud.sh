@@ -3,9 +3,9 @@
 # https://www.c-rieger.de
 # https://github.com/riegercloud
 # INSTALL-NEXTCLOUD.SH
-# Version 6.0
+# Version 6.1 (ARM64 compatible)
 # OpenSSL 1.1.1, TLSv1.3
-# October, 02nd 2018
+# October, 05th 2018
 ################################################
 # Ubuntu 18.04 LTS AMD64 - Nextcloud 14
 ################################################
@@ -58,7 +58,7 @@ deb http://archive.ubuntu.com/ubuntu bionic-security main multiverse restricted 
 deb http://archive.ubuntu.com/ubuntu bionic-updates main multiverse restricted universe
 deb http://nginx.org/packages/mainline/ubuntu/ bionic nginx
 deb-src http://nginx.org/packages/mainline/ubuntu/ bionic nginx
-deb [arch=amd64] http://ftp.hosteurope.de/mirror/mariadb.org/repo/10.3/ubuntu bionic main
+deb http://ftp.hosteurope.de/mirror/mariadb.org/repo/10.3/ubuntu bionic main
 EOF
 wget http://nginx.org/keys/nginx_signing.key && apt-key add nginx_signing.key
 apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xF1656F24C74CD1D8
@@ -77,7 +77,7 @@ sed -i "s/.*-Werror.*/# &/" /usr/local/src/nginx/nginx-1.15.5/auto/cc/gcc
 cd /usr/local/src/nginx/nginx-1.15.5/
 apt build-dep nginx -y && dpkg-buildpackage -b
 cd /usr/local/src/nginx/
-dpkg -i nginx_1.15.5-1~bionic_amd64.deb
+dpkg -i nginx_1.15.5-*.deb
 service nginx restart && apt-mark hold nginx
 # apt install nginx -y
 ###enable NGINX autostart
