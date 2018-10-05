@@ -2,7 +2,7 @@
 # Carsten Rieger IT-Services
 # https://www.c-rieger.de
 # https://github.com/riegercloud
-# INSTALL-NEXTCLOUD.SH
+# INSTALL-NEXTCLOUD-ARM64.SH
 # Version 1.0 (ARM64)
 # OpenSSL 1.1.1, TLSv1.3
 # October, 05th 2018
