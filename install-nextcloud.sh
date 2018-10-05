@@ -660,6 +660,8 @@ sudo -u www-data php /var/www/nextcloud/occ db:add-missing-indices
 echo ""
 sudo -u www-data php /var/www/nextcloud/occ db:convert-filecache-bigint
 echo ""
+sudo -u www-data php /var/www/nextcloud/occ db:convert-filecache-bigint
+echo ""
 /usr/sbin/service nginx start
 nextcloud_scan_data
 restart_all_services
