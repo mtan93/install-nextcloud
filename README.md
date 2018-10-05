@@ -2,9 +2,9 @@
 The initial script (install-nextcloud.sh) will install your self hosted Nextcloud within few minutes fully automated. Your server will be built of:
 
     Fail2Ban (Nextcloud and SSH jails)
-    MariaDB 10.3.9
-    Nextcloud 14
-    NGINX 1.15.4 TLSv.1.3
+    MariaDB 10.3.10
+    Nextcloud 14.0.1
+    NGINX 1.15.5 TLSv.1.3
     OpenSSL 1.1.1
     PHP 7.2.10
     Redis-Server
