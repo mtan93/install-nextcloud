@@ -3,9 +3,9 @@
 # https://www.c-rieger.de
 # https://github.com/riegercloud
 # INSTALL-NEXTCLOUD.SH
-# Version 6.1 (AMD64)
+# Version 6.2 (AMD64)
 # OpenSSL 1.1.1, TLSv1.3
-# October, 05th 2018
+# October, 08th 2018
 ################################################
 # Ubuntu 18.04 LTS AMD64 - Nextcloud 14
 ################################################
@@ -468,6 +468,7 @@ add_header X-Permitted-Cross-Domain-Policies none;
 add_header X-Content-Type-Options "nosniff" always;
 add_header X-XSS-Protection "1; mode=block" always;
 add_header Referrer-Policy "no-referrer" always;
+add_header Feature-Policy "geolocation 'self'"
 EOF
 touch /etc/nginx/optimization.conf
 cat <<EOF >/etc/nginx/optimization.conf
