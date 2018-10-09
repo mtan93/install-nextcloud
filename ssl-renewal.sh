@@ -1,5 +1,10 @@
 ####
 # renew your letsencrypt ssl certificates weekly
+######################################################################
+# PLEASE SUBSTITUTE username PROPERLY, e.g. nextcloud
+# PLEASE SUBSTITUTE Your Name PROPERLY, e.g. Carsten Rieger
+# PLEASE SUBSTITUTE your@email.com PROPERLY, e.g. info@nextcloud.com
+######################################################################
 # create a cronjob, e.g.:
 # crontab -e
 # @weekly /usr/local/src/install-nextcloud/ssl-renewal.sh > /home/username/ssl-renewal.txt
