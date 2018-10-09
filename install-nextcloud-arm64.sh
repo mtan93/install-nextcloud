@@ -660,6 +660,8 @@ sudo -u www-data php /var/www/nextcloud/occ db:convert-filecache-bigint
 /usr/sbin/service nginx start
 nextcloud_scan_data
 restart_all_services
+### run the cron.php once
+sudo -u www-data php /var/www/nextcloud/cron.php
 clear
 echo ""
 echo "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
