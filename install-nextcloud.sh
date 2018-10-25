@@ -56,9 +56,9 @@ cat <<EOF >>/etc/apt/sources.list
 deb http://archive.ubuntu.com/ubuntu bionic main multiverse restricted universe
 deb http://archive.ubuntu.com/ubuntu bionic-security main multiverse restricted universe
 deb http://archive.ubuntu.com/ubuntu bionic-updates main multiverse restricted universe
-deb http://nginx.org/packages/mainline/ubuntu/ bionic nginx
-deb-src http://nginx.org/packages/mainline/ubuntu/ bionic nginx
-deb http://ftp.hosteurope.de/mirror/mariadb.org/repo/10.3/ubuntu bionic main
+deb [arch=amd64] http://nginx.org/packages/mainline/ubuntu/ bionic nginx
+deb-src [arch=amd64] http://nginx.org/packages/mainline/ubuntu/ bionic nginx
+deb [arch=amd64] http://ftp.hosteurope.de/mirror/mariadb.org/repo/10.3/ubuntu bionic main
 EOF
 wget http://nginx.org/keys/nginx_signing.key && apt-key add nginx_signing.key
 apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xF1656F24C74CD1D8
@@ -444,6 +444,7 @@ ssl_ecdh_curve secp521r1:secp384r1:prime256v1;
 ssl_prefer_server_ciphers on;
 ssl_stapling on;
 ssl_stapling_verify on;
+ssl_early_data on;
 EOF
 touch /etc/nginx/proxy.conf
 cat <<EOF >/etc/nginx/proxy.conf
@@ -454,6 +455,7 @@ proxy_set_header X-Forwarded-Protocol \$scheme;
 proxy_set_header X-Forwarded-For \$remote_addr;
 proxy_set_header X-Forwarded-Port \$server_port;
 proxy_set_header X-Forwarded-Server \$host;
+proxy_set_header Early-Data $ssl_early_data;
 proxy_connect_timeout 3600;
 proxy_send_timeout 3600;
 proxy_read_timeout 3600;
