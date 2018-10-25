@@ -51,9 +51,9 @@ clear
 ### START ###
 cd /usr/local/src
 ###prepare the server environment
-sed -i '$adeb http://nginx.org/packages/mainline/ubuntu/ bionic nginx' /etc/apt/sources.list
-sed -i '$adeb-src http://nginx.org/packages/mainline/ubuntu/ bionic nginx' /etc/apt/sources.list
-sed -i '$adeb http://ftp.hosteurope.de/mirror/mariadb.org/repo/10.3/ubuntu bionic main' /etc/apt/sources.list
+sed -i '$adeb [arch=arm64] http://nginx.org/packages/mainline/ubuntu/ bionic nginx' /etc/apt/sources.list
+sed -i '$adeb-src [arch=arm64] http://nginx.org/packages/mainline/ubuntu/ bionic nginx' /etc/apt/sources.list
+sed -i '$adeb [arch=arm64] http://ftp.hosteurope.de/mirror/mariadb.org/repo/10.3/ubuntu bionic main' /etc/apt/sources.list
 wget http://nginx.org/keys/nginx_signing.key && apt-key add nginx_signing.key
 apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xF1656F24C74CD1D8
 update_and_clean
@@ -438,6 +438,7 @@ ssl_ecdh_curve secp521r1:secp384r1:prime256v1;
 ssl_prefer_server_ciphers on;
 ssl_stapling on;
 ssl_stapling_verify on;
+ssl_early_data on;
 EOF
 touch /etc/nginx/proxy.conf
 cat <<EOF >/etc/nginx/proxy.conf
@@ -448,6 +449,7 @@ proxy_set_header X-Forwarded-Protocol \$scheme;
 proxy_set_header X-Forwarded-For \$remote_addr;
 proxy_set_header X-Forwarded-Port \$server_port;
 proxy_set_header X-Forwarded-Server \$host;
+proxy_set_header Early-Data $ssl_early_data;
 proxy_connect_timeout 3600;
 proxy_send_timeout 3600;
 proxy_read_timeout 3600;
