@@ -3,9 +3,9 @@
 # https://www.c-rieger.de
 # https://github.com/riegercloud
 # INSTALL-NEXTCLOUD.SH
-# Version 6.4 (AMD64)
+# Version 6.5 (AMD64)
 # OpenSSL 1.1.1, TLSv1.3
-# October, 25th 2018
+# October, 26th 2018
 ################################################
 # Ubuntu 18.04 LTS AMD64 - Nextcloud 14
 ################################################
