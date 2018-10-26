@@ -3,9 +3,9 @@
 # https://www.c-rieger.de
 # https://github.com/riegercloud
 # INSTALL-NEXTCLOUD-ARM64.SH
-# Version 6.2 (ARM64)
+# Version 6.4 (ARM64)
 # OpenSSL 1.1.1, TLSv1.3
-# October, 08th 2018
+# October, 25th 2018
 ################################################
 # Ubuntu 18.04 LTS AMD64 - Nextcloud 14
 ################################################
@@ -449,7 +449,7 @@ proxy_set_header X-Forwarded-Protocol \$scheme;
 proxy_set_header X-Forwarded-For \$remote_addr;
 proxy_set_header X-Forwarded-Port \$server_port;
 proxy_set_header X-Forwarded-Server \$host;
-proxy_set_header Early-Data $ssl_early_data;
+proxy_set_header Early-Data \$ssl_early_data;
 proxy_connect_timeout 3600;
 proxy_send_timeout 3600;
 proxy_read_timeout 3600;
