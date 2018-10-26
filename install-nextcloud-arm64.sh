@@ -3,9 +3,9 @@
 # https://www.c-rieger.de
 # https://github.com/riegercloud
 # INSTALL-NEXTCLOUD-ARM64.SH
-# Version 6.4 (ARM64)
+# Version 6.5 (ARM64)
 # OpenSSL 1.1.1, TLSv1.3
-# October, 25th 2018
+# October, 26th 2018
 ################################################
 # Ubuntu 18.04 LTS AMD64 - Nextcloud 14
 ################################################
@@ -22,6 +22,18 @@ function restart_all_services() {
 /usr/sbin/service nginx restart
 /usr/sbin/service mysql restart
 /usr/sbin/service redis-server restart
+/usr/sbin/service php7.2-fpm restart
+}
+###global function to solve php-imagickexception as decribed here: https://www.c-rieger.de/solution-for-imagickexception-in-nextcloud-log
+function phpimagickexception() {
+/usr/sbin/service nginx stop
+/usr/sbin/service php7.2-fpm stop
+cp /etc/ImageMagick-6/policy.xml /etc/ImageMagick-6/policy.xml.bak
+sed -i "s/rights\=\"none\" pattern\=\"PS\"/rights\=\"read\|write\" pattern\=\"PS\"/" /etc/ImageMagick-6/policy.xml
+sed -i "s/rights\=\"none\" pattern\=\"EPI\"/rights\=\"read\|write\" pattern\=\"EPI\"/" /etc/ImageMagick-6/policy.xml
+sed -i "s/rights\=\"none\" pattern\=\"PDF\"/rights\=\"read\|write\" pattern\=\"PDF\"/" /etc/ImageMagick-6/policy.xml
+sed -i "s/rights\=\"none\" pattern\=\"XPS\"/rights\=\"read\|write\" pattern\=\"XPS\"/" /etc/ImageMagick-6/policy.xml
+/usr/sbin/service nginx restart
 /usr/sbin/service php7.2-fpm restart
 }
 ###global function to scan Nextcloud data and generate an overview for fail2ban & ufw
@@ -659,7 +671,7 @@ echo "---------------------------------"
 echo ""
 sudo -u www-data php /var/www/nextcloud/occ db:add-missing-indices
 sudo -u www-data php /var/www/nextcloud/occ db:convert-filecache-bigint
-/usr/sbin/service nginx start
+phpimagickexception
 nextcloud_scan_data
 restart_all_services
 ### run the cron.php once
