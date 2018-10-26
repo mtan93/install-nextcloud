@@ -24,6 +24,18 @@ function restart_all_services() {
 /usr/sbin/service redis-server restart
 /usr/sbin/service php7.2-fpm restart
 }
+###global function to solve php-imagickexception as decribed here: https://www.c-rieger.de/solution-for-imagickexception-in-nextcloud-log
+function phpimagickexception() {
+/usr/sbin/service nginx stop
+/usr/sbin/service php7.2-fpm stop
+cp /etc/ImageMagick-6/policy.xml /etc/ImageMagick-6/policy.xml.bak
+sed -i "s/rights\=\"none\" pattern\=\"PS\"/rights\=\"read\|write\" pattern\=\"PS\"/" /etc/ImageMagick-6/policy.xml
+sed -i "s/rights\=\"none\" pattern\=\"EPI\"/rights\=\"read\|write\" pattern\=\"EPI\"/" /etc/ImageMagick-6/policy.xml
+sed -i "s/rights\=\"none\" pattern\=\"PDF\"/rights\=\"read\|write\" pattern\=\"PDF\"/" /etc/ImageMagick-6/policy.xml
+sed -i "s/rights\=\"none\" pattern\=\"XPS\"/rights\=\"read\|write\" pattern\=\"XPS\"/" /etc/ImageMagick-6/policy.xml
+/usr/sbin/service nginx restart
+/usr/sbin/service php7.2-fpm restart
+}
 ###global function to scan Nextcloud data and generate an overview for fail2ban & ufw
 function nextcloud_scan_data() {
 sudo -u www-data php /var/www/nextcloud/occ files:scan --all
@@ -665,7 +677,7 @@ echo "---------------------------------"
 echo ""
 sudo -u www-data php /var/www/nextcloud/occ db:add-missing-indices
 sudo -u www-data php /var/www/nextcloud/occ db:convert-filecache-bigint
-/usr/sbin/service nginx start
+phpimagickexception
 nextcloud_scan_data
 restart_all_services
 ### issue the cron.php once
