@@ -3,9 +3,9 @@
 # https://www.c-rieger.de
 # https://github.com/riegercloud
 # INSTALL-NEXTCLOUD-ARM64.SH
-# Version 6.5 (ARM64)
+# Version 6.6 (ARM64)
 # OpenSSL 1.1.1, TLSv1.3
-# October, 26th 2018
+# November, 08th 2018
 ################################################
 # Ubuntu 18.04 LTS AMD64 - Nextcloud 14
 ################################################
@@ -78,12 +78,12 @@ apt install dpkg-dev -y && apt source nginx
 cd /usr/local/src && apt install git -y
 git clone https://github.com/openssl/openssl.git
 cd openssl && git checkout OpenSSL_1_1_1-stable
-cp /usr/local/src/install-nextcloud/rules.nginx /usr/local/src/nginx/nginx-1.15.5/debian/rules
-sed -i "s/.*-Werror.*/# &/" /usr/local/src/nginx/nginx-1.15.5/auto/cc/gcc
-cd /usr/local/src/nginx/nginx-1.15.5/
+cp /usr/local/src/install-nextcloud/rules.nginx /usr/local/src/nginx/nginx-1.15.6/debian/rules
+sed -i "s/.*-Werror.*/# &/" /usr/local/src/nginx/nginx-1.15.6/auto/cc/gcc
+cd /usr/local/src/nginx/nginx-1.15.6/
 apt build-dep nginx -y && dpkg-buildpackage -b
 cd /usr/local/src/nginx/
-dpkg -i nginx_1.15.5-*.deb
+dpkg -i nginx_1.15.6-*.deb
 service nginx restart && apt-mark hold nginx
 # apt install nginx -y
 ###enable NGINX autostart
