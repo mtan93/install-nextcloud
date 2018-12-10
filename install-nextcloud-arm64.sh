@@ -2,12 +2,13 @@
 # Carsten Rieger IT-Services
 # https://www.c-rieger.de
 # https://github.com/riegercloud
-# INSTALL-NEXTCLOUD-ARM64.SH
-# Version 6.7 (ARM64)
+# INSTALL-NEXTCLOUD.SH
+# Version 6.8 (ARM64)
+# Nextcloud 15
 # OpenSSL 1.1.1, TLSv1.3, NGINX 1.15.7
-# November, 27th 2018
+# December, 10th 2018
 ################################################
-# Ubuntu 18.04 LTS AMD64 - Nextcloud 14
+# Ubuntu 18.04 LTS ARM64 - Nextcloud 15
 ################################################
 #!/bin/bash
 ###global function to update and cleanup the environment
