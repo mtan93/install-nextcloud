@@ -64,6 +64,7 @@ clear
 ### START ###
 cd /usr/local/src
 ###prepare the server environment
+apt install wget -y
 mv /etc/apt/sources.list /etc/apt/sources.list.bak && touch /etc/apt/sources.list
 cat <<EOF >>/etc/apt/sources.list
 deb http://archive.ubuntu.com/ubuntu bionic main multiverse restricted universe
