@@ -693,5 +693,5 @@ echo ""
 echo " https://$YOURSERVERNAME"
 echo ""
 echo "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
-rm ~/.bash_history && history -c && history -w
+cat /dev/null > ~/.bash_history && history -c && history -w
 exit 0
