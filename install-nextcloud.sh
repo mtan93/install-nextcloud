@@ -3,10 +3,10 @@
 # https://www.c-rieger.de
 # https://github.com/riegercloud
 # INSTALL-NEXTCLOUD.SH
-# Version 6.8 (AMD64)
+# Version 6.9 (AMD64)
 # Nextcloud 15
-# OpenSSL 1.1.1, TLSv1.3, NGINX 1.15.7
-# December, 10th 2018
+# OpenSSL 1.1.1, TLSv1.3, NGINX 1.15.8
+# December, 27th 2018
 ################################################
 # Ubuntu 18.04 LTS AMD64 - Nextcloud 15
 ################################################
@@ -86,12 +86,12 @@ apt install dpkg-dev -y && apt source nginx
 cd /usr/local/src && apt install git -y
 git clone https://github.com/openssl/openssl.git
 cd openssl && git checkout OpenSSL_1_1_1-stable
-cp /usr/local/src/install-nextcloud/rules.nginx /usr/local/src/nginx/nginx-1.15.7/debian/rules
-sed -i "s/.*-Werror.*/# &/" /usr/local/src/nginx/nginx-1.15.7/auto/cc/gcc
-cd /usr/local/src/nginx/nginx-1.15.7/
+cp /usr/local/src/install-nextcloud/rules.nginx /usr/local/src/nginx/nginx-1.15.8/debian/rules
+sed -i "s/.*-Werror.*/# &/" /usr/local/src/nginx/nginx-1.15.8/auto/cc/gcc
+cd /usr/local/src/nginx/nginx-1.15.8/
 apt build-dep nginx -y && dpkg-buildpackage -b
 cd /usr/local/src/nginx/
-dpkg -i nginx_1.15.7-*.deb
+dpkg -i nginx_1.15.8-*.deb
 service nginx restart && apt-mark hold nginx
 # apt install nginx -y
 ###enable NGINX autostart
