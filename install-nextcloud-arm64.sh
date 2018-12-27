@@ -3,10 +3,10 @@
 # https://www.c-rieger.de
 # https://github.com/riegercloud
 # INSTALL-NEXTCLOUD.SH
-# Version 6.8 (ARM64)
+# Version 6.9 (ARM64)
 # Nextcloud 15
-# OpenSSL 1.1.1, TLSv1.3, NGINX 1.15.7
-# December, 10th 2018
+# OpenSSL 1.1.1, TLSv1.3, NGINX 1.15.8
+# December, 28th 2018
 ################################################
 # Ubuntu 18.04 LTS ARM64 - Nextcloud 15
 ################################################
@@ -64,6 +64,7 @@ clear
 ### START ###
 cd /usr/local/src
 ###prepare the server environment
+apt install gnupg2 wget -y
 sed -i '$adeb [arch=arm64] http://nginx.org/packages/mainline/ubuntu/ bionic nginx' /etc/apt/sources.list
 sed -i '$adeb-src [arch=arm64] http://nginx.org/packages/mainline/ubuntu/ bionic nginx' /etc/apt/sources.list
 sed -i '$adeb [arch=arm64] http://ftp.hosteurope.de/mirror/mariadb.org/repo/10.3/ubuntu bionic main' /etc/apt/sources.list
@@ -79,12 +80,12 @@ apt install dpkg-dev -y && apt source nginx
 cd /usr/local/src && apt install git -y
 git clone https://github.com/openssl/openssl.git
 cd openssl && git checkout OpenSSL_1_1_1-stable
-cp /usr/local/src/install-nextcloud/rules.nginx /usr/local/src/nginx/nginx-1.15.7/debian/rules
-sed -i "s/.*-Werror.*/# &/" /usr/local/src/nginx/nginx-1.15.7/auto/cc/gcc
-cd /usr/local/src/nginx/nginx-1.15.7/
+cp /usr/local/src/install-nextcloud/rules.nginx /usr/local/src/nginx/nginx-1.15.8/debian/rules
+sed -i "s/.*-Werror.*/# &/" /usr/local/src/nginx/nginx-1.15.8/auto/cc/gcc
+cd /usr/local/src/nginx/nginx-1.15.8/
 apt build-dep nginx -y && dpkg-buildpackage -b
 cd /usr/local/src/nginx/
-dpkg -i nginx_1.15.7-*.deb
+dpkg -i nginx_1.15.8-*.deb
 service nginx restart && apt-mark hold nginx
 # apt install nginx -y
 ###enable NGINX autostart
@@ -686,5 +687,6 @@ echo ""
 echo " https://$YOURSERVERNAME"
 echo ""
 echo "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
-rm ~/.bash_history && history -c && history -w
+### CleanUp ###
+cat /dev/null > ~/.bash_history && history -c && history -w
 exit 0
