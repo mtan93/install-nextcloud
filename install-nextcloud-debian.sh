@@ -65,6 +65,7 @@ clear
 }
 ### START ###
 cd /usr/local/src
+apt install apt-transport-https git wget gnupg2 -y
 mv /etc/apt/sources.list /etc/apt/sources.list.bak && touch /etc/apt/sources.list
 cat <<EOF >>/etc/apt/sources.list
 deb http://deb.debian.org/debian stretch main
@@ -78,7 +79,6 @@ EOF
 wget -O /etc/apt/trusted.gpg.d/php.gpg https://packages.sury.org/php/apt.gpg
 wget http://nginx.org/keys/nginx_signing.key && apt-key add nginx_signing.key
 apt-key adv --recv-keys --keyserver keyserver.ubuntu.com 0xF1656F24C74CD1D8
-apt update && apt install apt-transport-https git wget gnupg2 -y
 ###
 update_and_clean
 ###
