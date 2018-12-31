@@ -3,7 +3,6 @@
 # https://www.c-rieger.de
 # https://github.com/riegercloud
 # INSTALL-NEXTCLOUD-DEBIAN.SH
-# !!! BETA !!!
 # Version 0.1 (AMD64)
 # Nextcloud 15
 # OpenSSL 1.1.1, TLSv1.3, NGINX 1.15.8
@@ -76,10 +75,10 @@ deb [arch=amd64] http://mirror2.hs-esslingen.de/mariadb/repo/10.3/debian stretch
 deb https://packages.sury.org/php/ stretch main
 EOF
 ###prepare the server environment
-apt update && apt install apt-transport-https git wget gnupg2 -y
 wget -O /etc/apt/trusted.gpg.d/php.gpg https://packages.sury.org/php/apt.gpg
 wget http://nginx.org/keys/nginx_signing.key && apt-key add nginx_signing.key
 apt-key adv --recv-keys --keyserver keyserver.ubuntu.com 0xF1656F24C74CD1D8
+apt update && apt install apt-transport-https git wget gnupg2 -y
 ###
 update_and_clean
 ###
@@ -709,4 +708,4 @@ echo ""
 echo "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
 ### CleanUp ###
 cat /dev/null > ~/.bash_history && history -c && history -w
-exit 0
+exit 0      
