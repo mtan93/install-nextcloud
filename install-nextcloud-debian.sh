@@ -562,8 +562,8 @@ su - www-data -s /bin/bash -c 'php /var/www/nextcloud/occ maintenance:install --
 declare -l YOURSERVERNAME
 YOURSERVERNAME=$(hostname)
 cp /var/www/nextcloud/config/config.php /var/www/nextcloud/config/config.php.bak
-su - www-data -s /bin/bash -c 'php /var/www/nextcloud/occ config:system:set trusted_domains 0 --value=$YOURSERVERNAME'
-su - www-data -s /bin/bash -c 'php /var/www/nextcloud/occ config:system:set overwrite.cli.url --value=https://$YOURSERVERNAME'
+su - www-data -s /bin/bash -c 'php /var/www/nextcloud/occ config:system:set trusted_domains 0 --value=$HOSTNAME'
+su - www-data -s /bin/bash -c 'php /var/www/nextcloud/occ config:system:set overwrite.cli.url --value=https://$HOSTNAME'
 echo ""
 echo "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
 ###backup of the effected file .user.ini
@@ -701,7 +701,7 @@ echo "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 echo ""
 echo " Open your browser and call your Nextcloud at"
 echo ""
-echo " https://$YOURSERVERNAME"
+echo " https://$HOSTNAME"
 echo ""
 echo "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
 ### CleanUp ###
