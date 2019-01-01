@@ -3,7 +3,7 @@
 # https://www.c-rieger.de
 # https://github.com/riegercloud
 # INSTALL-NEXTCLOUD-DEBIAN.SH
-# Version RC1 (AMD64)
+# Version 1.0 (AMD64)
 # Nextcloud 15
 # OpenSSL 1.1.1, TLSv1.3, NGINX 1.15.8
 # January, 1st 2019
