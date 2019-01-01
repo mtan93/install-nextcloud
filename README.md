@@ -11,7 +11,7 @@ The initial script (install-nextcloud.sh // install-nextcloud-debian.sh) will in
     self signed or Let's Encrypt SSL using the second script
     UFW (22, 80, 443)
 
-The only precondition for the install-nextcloud.sh and install-nextcloud-debian.sh shell script is to utilize Ubuntu 18.04 LTS or Debian Strecth 9.x as your on-prem server OS. Optionally you may request your ssl certificate from Let's Encrypt by issuing the second script called "ssl-certificate.sh".
+The only precondition for the install-nextcloud.sh and install-nextcloud-debian.sh shell script is to utilize Ubuntu 18.04 LTS or Debian Stretch 9.x as your on-prem server OS. Optionally you may request your ssl certificate from Let's Encrypt by issuing the second script called "ssl-certificate.sh".
 
 Ready to go? Let's start:
 
