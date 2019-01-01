@@ -350,7 +350,6 @@ CREATE USER $NEXTCLOUDDBUSER@localhost identified by '$NEXTCLOUDDBPASSWORD';
 GRANT ALL PRIVILEGES on $NEXTCLOUDDBNAME.* to $NEXTCLOUDDBUSER@localhost;
 FLUSH privileges;
 EOF
-
 ###harden your MariDB server
 mysql_secure_installation
 update_and_clean
@@ -365,7 +364,6 @@ usermod -a -G redis www-data
 cp /etc/sysctl.conf /etc/sysctl.conf.bak && sed -i '$avm.overcommit_memory = 1' /etc/sysctl.conf
 ###install self signed certificates
 apt install ssl-cert -y
-
 ###prepare NGINX for Nextcloud and SSL
 mv /etc/nginx/conf.d/default.conf /etc/nginx/conf.d/default.conf.bak
 touch /etc/nginx/conf.d/default.conf
@@ -558,8 +556,8 @@ echo "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 echo ""
 echo "Your NEXTCLOUD will now be installed silently - please be patient ..."
 echo ""
-
-su - www-data -s /bin/bash -c 'php /var/www/nextcloud/occ maintenance:install --database "mysql" --database-name "$NEXTCLOUDDBNAME"  --database-user "$NEXTCLOUDDBUSER" --database-pass "$NEXTCLOUDDBPASSWORD" --admin-user "$NEXTCLOUDADMINUSER" --admin-pass "$NEXTCLOUDADMINUSERPASSWORD" --data-dir "/var/nc_data"'
+#su - www-data -s /bin/bash -c 'php /var/www/nextcloud/occ maintenance:install --database "mysql" --database-name "$NEXTCLOUDDBNAME"  --database-user "$NEXTCLOUDDBUSER" --database-pass "$NEXTCLOUDDBPASSWORD" --admin-user "$NEXTCLOUDADMINUSER" --admin-pass "$NEXTCLOUDADMINUSERPASSWORD" --data-dir "/var/nc_data"'
+su - www-data -s /bin/bash -c 'php /var/www/nextcloud/occ maintenance:install --database mysql --database-name '$NEXTCLOUDDBNAME' --database-user '$NEXTCLOUDDBUSER' --database-pass '$NEXTCLOUDDBPASSWORD' --admin-user '$NEXTCLOUDADMINUSER' --admin-pass '$NEXTCLOUDADMINUSERPASSWORD' --data-dir '/var/nc_data''
 ###read and store the current hostname in lowercases
 declare -l YOURSERVERNAME
 YOURSERVERNAME=$(hostname)
