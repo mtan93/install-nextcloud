@@ -12,4 +12,4 @@ sudo -u www-data sed -i "s/output_buffering=.*/output_buffering='Off'/" /var/www
 sudo -u www-data php /var/www/nextcloud/occ update:check
 /usr/sbin/service php7.2-fpm restart
 /usr/sbin/service nginx restart
-exit 0
+exit 0  
