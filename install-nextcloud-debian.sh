@@ -3,10 +3,10 @@
 # https://www.c-rieger.de
 # https://github.com/riegercloud
 # INSTALL-NEXTCLOUD-DEBIAN.SH
-# Version 1.0 (AMD64)
+# Version 1.1 (AMD64)
 # Nextcloud 15
 # OpenSSL 1.1.1, TLSv1.3, NGINX 1.15.8
-# January, 1st 2019
+# January, 2nd 2019
 ################################################
 # Debian Stretch 9.x AMD64 - Nextcloud 15
 ################################################
@@ -65,7 +65,7 @@ clear
 }
 ### START ###
 cd /usr/local/src
-apt install apt-transport-https git wget gnupg2 -y
+apt install apt-transport-https git wget gnupg2 dirmngr -y
 mv /etc/apt/sources.list /etc/apt/sources.list.bak && touch /etc/apt/sources.list
 cat <<EOF >>/etc/apt/sources.list
 deb http://deb.debian.org/debian stretch main
