@@ -3,10 +3,10 @@
 # https://www.c-rieger.de
 # https://github.com/riegercloud
 # INSTALL-NEXTCLOUD.SH
-# Version 6.9b (AMD64)
+# Version 7.0 (AMD64)
 # Nextcloud 15
-# OpenSSL 1.1.1, TLSv1.3, NGINX 1.15.8
-# December, 28th 2018
+# OpenSSL 1.1.1, TLSv1.3, NGINX 1.15.8 PHP 7.3
+# January, 8th 2019
 ################################################
 # Ubuntu 18.04 LTS AMD64 - Nextcloud 15
 ################################################
@@ -25,19 +25,19 @@ function restart_all_services() {
 /usr/sbin/service nginx restart
 /usr/sbin/service mysql restart
 /usr/sbin/service redis-server restart
-/usr/sbin/service php7.2-fpm restart
+/usr/sbin/service php7.3-fpm restart
 }
 ###global function to solve php-imagickexception as decribed here: https://www.c-rieger.de/solution-for-imagickexception-in-nextcloud-log
 function phpimagickexception() {
 /usr/sbin/service nginx stop
-/usr/sbin/service php7.2-fpm stop
+/usr/sbin/service php7.3-fpm stop
 cp /etc/ImageMagick-6/policy.xml /etc/ImageMagick-6/policy.xml.bak
 sed -i "s/rights\=\"none\" pattern\=\"PS\"/rights\=\"read\|write\" pattern\=\"PS\"/" /etc/ImageMagick-6/policy.xml
 sed -i "s/rights\=\"none\" pattern\=\"EPI\"/rights\=\"read\|write\" pattern\=\"EPI\"/" /etc/ImageMagick-6/policy.xml
 sed -i "s/rights\=\"none\" pattern\=\"PDF\"/rights\=\"read\|write\" pattern\=\"PDF\"/" /etc/ImageMagick-6/policy.xml
 sed -i "s/rights\=\"none\" pattern\=\"XPS\"/rights\=\"read\|write\" pattern\=\"XPS\"/" /etc/ImageMagick-6/policy.xml
 /usr/sbin/service nginx restart
-/usr/sbin/service php7.2-fpm restart
+/usr/sbin/service php7.3-fpm restart
 }
 ###global function to scan Nextcloud data and generate an overview for fail2ban & ufw
 function nextcloud_scan_data() {
@@ -73,10 +73,12 @@ deb http://archive.ubuntu.com/ubuntu bionic main multiverse restricted universe
 deb http://archive.ubuntu.com/ubuntu bionic-security main multiverse restricted universe
 deb http://archive.ubuntu.com/ubuntu bionic-updates main multiverse restricted universe
 deb [arch=amd64] http://nginx.org/packages/mainline/ubuntu/ bionic nginx
+deb http://ppa.launchpad.net/ondrej/php/ubuntu bionic main
 deb-src [arch=amd64] http://nginx.org/packages/mainline/ubuntu/ bionic nginx
 deb [arch=amd64] http://ftp.hosteurope.de/mirror/mariadb.org/repo/10.3/ubuntu bionic main
 EOF
 wget http://nginx.org/keys/nginx_signing.key && apt-key add nginx_signing.key
+apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 4F4EA0AAE5267A6C
 apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xF1656F24C74CD1D8
 update_and_clean
 apt install software-properties-common zip unzip screen curl git wget ffmpeg libfile-fcntllock-perl -y
@@ -113,7 +115,7 @@ use epoll;
 http {
 server_names_hash_bucket_size 64;
 upstream php-handler {
-server unix:/run/php/php7.2-fpm.sock;
+server unix:/run/php/php7.3-fpm.sock;
 }
 include /etc/nginx/mime.types;
 #include /etc/nginx/proxy.conf;
@@ -132,7 +134,7 @@ open_file_cache_errors on;
 keepalive_timeout 65;
 reset_timedout_connection on;
 server_tokens off;
-resolver 208.67.222.222 valid=30s;
+resolver 8.8.8.8 valid=30s;
 resolver_timeout 5s;
 include /etc/nginx/conf.d/*.conf;
 }
@@ -145,81 +147,81 @@ mkdir -p /var/nc_data /var/www/letsencrypt /usr/local/tmp/cache /usr/local/tmp/s
 chown -R www-data:www-data /upload_tmp /var/nc_data /var/www
 chown -R www-data:root /usr/local/tmp/sessions /usr/local/tmp/cache /usr/local/tmp/apc
 ###install PHP
-apt install php7.2-fpm php7.2-gd php7.2-mysql php7.2-curl php7.2-xml php7.2-zip php7.2-intl php7.2-mbstring php7.2-json php7.2-bz2 php7.2-ldap php-apcu imagemagick php-imagick -y
+apt install php7.3-fpm php7.3-gd php7.3-mysql php7.3-curl php7.3-xml php7.3-zip php7.3-intl php7.3-mbstring php7.3-json php7.3-bz2 php7.3-ldap php-apcu imagemagick php-imagick -y
 ###adjust PHP
-cp /etc/php/7.2/fpm/pool.d/www.conf /etc/php/7.2/fpm/pool.d/www.conf.bak
-cp /etc/php/7.2/cli/php.ini /etc/php/7.2/cli/php.ini.bak
-cp /etc/php/7.2/fpm/php.ini /etc/php/7.2/fpm/php.ini.bak
-cp /etc/php/7.2/fpm/php-fpm.conf /etc/php/7.2/fpm/php-fpm.conf.bak
-sed -i "s/;env\[HOSTNAME\] = /env[HOSTNAME] = /" /etc/php/7.2/fpm/pool.d/www.conf
-sed -i "s/;env\[TMP\] = /env[TMP] = /" /etc/php/7.2/fpm/pool.d/www.conf
-sed -i "s/;env\[TMPDIR\] = /env[TMPDIR] = /" /etc/php/7.2/fpm/pool.d/www.conf
-sed -i "s/;env\[TEMP\] = /env[TEMP] = /" /etc/php/7.2/fpm/pool.d/www.conf
-sed -i "s/;env\[PATH\] = /env[PATH] = /" /etc/php/7.2/fpm/pool.d/www.conf
-sed -i "s/pm.max_children = .*/pm.max_children = 240/" /etc/php/7.2/fpm/pool.d/www.conf
-sed -i "s/pm.start_servers = .*/pm.start_servers = 20/" /etc/php/7.2/fpm/pool.d/www.conf
-sed -i "s/pm.min_spare_servers = .*/pm.min_spare_servers = 10/" /etc/php/7.2/fpm/pool.d/www.conf
-sed -i "s/pm.max_spare_servers = .*/pm.max_spare_servers = 20/" /etc/php/7.2/fpm/pool.d/www.conf
-sed -i "s/;pm.max_requests = 500/pm.max_requests = 500/" /etc/php/7.2/fpm/pool.d/www.conf
-sed -i "s/output_buffering =.*/output_buffering = 'Off'/" /etc/php/7.2/cli/php.ini
-sed -i "s/max_execution_time =.*/max_execution_time = 1800/" /etc/php/7.2/cli/php.ini
-sed -i "s/max_input_time =.*/max_input_time = 3600/" /etc/php/7.2/cli/php.ini
-sed -i "s/post_max_size =.*/post_max_size = 10240M/" /etc/php/7.2/cli/php.ini
-sed -i "s/;upload_tmp_dir =.*/upload_tmp_dir = \/upload_tmp/" /etc/php/7.2/cli/php.ini
-sed -i "s/upload_max_filesize =.*/upload_max_filesize = 10240M/" /etc/php/7.2/cli/php.ini
-sed -i "s/max_file_uploads =.*/max_file_uploads = 100/" /etc/php/7.2/cli/php.ini
-sed -i "s/;date.timezone.*/date.timezone = Europe\/\Berlin/" /etc/php/7.2/cli/php.ini
-sed -i "s/;session.cookie_secure.*/session.cookie_secure = True/" /etc/php/7.2/cli/php.ini
-sed -i "s/;session.save_path =.*/session.save_path = \"N;700;\/usr\/local\/tmp\/sessions\"/" /etc/php/7.2/cli/php.ini
-sed -i '$aapc.enable_cli = 1' /etc/php/7.2/cli/php.ini
-sed -i "s/memory_limit = 128M/memory_limit = 512M/" /etc/php/7.2/fpm/php.ini
-sed -i "s/output_buffering =.*/output_buffering = 'Off'/" /etc/php/7.2/fpm/php.ini
-sed -i "s/max_execution_time =.*/max_execution_time = 1800/" /etc/php/7.2/fpm/php.ini
-sed -i "s/max_input_time =.*/max_input_time = 3600/" /etc/php/7.2/fpm/php.ini
-sed -i "s/post_max_size =.*/post_max_size = 10240M/" /etc/php/7.2/fpm/php.ini
-sed -i "s/;upload_tmp_dir =.*/upload_tmp_dir = \/upload_tmp/" /etc/php/7.2/fpm/php.ini
-sed -i "s/upload_max_filesize =.*/upload_max_filesize = 10240M/" /etc/php/7.2/fpm/php.ini
-sed -i "s/max_file_uploads =.*/max_file_uploads = 100/" /etc/php/7.2/fpm/php.ini
-sed -i "s/;date.timezone.*/date.timezone = Europe\/\Berlin/" /etc/php/7.2/fpm/php.ini
-sed -i "s/;session.cookie_secure.*/session.cookie_secure = True/" /etc/php/7.2/fpm/php.ini
-sed -i "s/;opcache.enable=.*/opcache.enable=1/" /etc/php/7.2/fpm/php.ini
-sed -i "s/;opcache.enable_cli=.*/opcache.enable_cli=1/" /etc/php/7.2/fpm/php.ini
-sed -i "s/;opcache.memory_consumption=.*/opcache.memory_consumption=128/" /etc/php/7.2/fpm/php.ini
-sed -i "s/;opcache.interned_strings_buffer=.*/opcache.interned_strings_buffer=8/" /etc/php/7.2/fpm/php.ini
-sed -i "s/;opcache.max_accelerated_files=.*/opcache.max_accelerated_files=10000/" /etc/php/7.2/fpm/php.ini
-sed -i "s/;opcache.revalidate_freq=.*/opcache.revalidate_freq=1/" /etc/php/7.2/fpm/php.ini
-sed -i "s/;opcache.save_comments=.*/opcache.save_comments=1/" /etc/php/7.2/fpm/php.ini
-sed -i "s/;session.save_path =.*/session.save_path = \"N;700;\/usr\/local\/tmp\/sessions\"/" /etc/php/7.2/fpm/php.ini
-sed -i "s/;emergency_restart_threshold =.*/emergency_restart_threshold = 10/" /etc/php/7.2/fpm/php-fpm.conf
-sed -i "s/;emergency_restart_interval =.*/emergency_restart_interval = 1m/" /etc/php/7.2/fpm/php-fpm.conf
-sed -i "s/;process_control_timeout =.*/process_control_timeout = 10s/" /etc/php/7.2/fpm/php-fpm.conf
-sed -i '$aapc.enabled=1' /etc/php/7.2/fpm/php.ini
-sed -i '$aapc.file_update_protection=2' /etc/php/7.2/fpm/php.ini
-sed -i '$aapc.optimization=0' /etc/php/7.2/fpm/php.ini
-sed -i '$aapc.shm_size=256M' /etc/php/7.2/fpm/php.ini
-sed -i '$aapc.include_once_override=0' /etc/php/7.2/fpm/php.ini
-sed -i '$aapc.shm_segments=1' /etc/php/7.2/fpm/php.ini
-sed -i '$aapc.ttl=7200' /etc/php/7.2/fpm/php.ini
-sed -i '$aapc.user_ttl=7200' /etc/php/7.2/fpm/php.ini
-sed -i '$aapc.gc_ttl=3600' /etc/php/7.2/fpm/php.ini
-sed -i '$aapc.num_files_hint=1024' /etc/php/7.2/fpm/php.ini
-sed -i '$aapc.enable_cli=0' /etc/php/7.2/fpm/php.ini
-sed -i '$aapc.max_file_size=5M' /etc/php/7.2/fpm/php.ini
-sed -i '$aapc.cache_by_default=1' /etc/php/7.2/fpm/php.ini
-sed -i '$aapc.use_request_time=1' /etc/php/7.2/fpm/php.ini
-sed -i '$aapc.slam_defense=0' /etc/php/7.2/fpm/php.ini
-sed -i '$aapc.mmap_file_mask=/usr/local/tmp/apc.XXXXXX' /etc/php/7.2/fpm/php.ini
-sed -i '$aapc.stat_ctime=0' /etc/php/7.2/fpm/php.ini
-sed -i '$aapc.canonicalize=1' /etc/php/7.2/fpm/php.ini
-sed -i '$aapc.write_lock=1' /etc/php/7.2/fpm/php.ini
-sed -i '$aapc.report_autofilter=0' /etc/php/7.2/fpm/php.ini
-sed -i '$aapc.rfc1867=0' /etc/php/7.2/fpm/php.ini
-sed -i '$aapc.rfc1867_prefix =upload_' /etc/php/7.2/fpm/php.ini
-sed -i '$aapc.rfc1867_name=APC_UPLOAD_PROGRESS' /etc/php/7.2/fpm/php.ini
-sed -i '$aapc.rfc1867_freq=0' /etc/php/7.2/fpm/php.ini
-sed -i '$aapc.rfc1867_ttl=3600' /etc/php/7.2/fpm/php.ini
-sed -i '$aapc.lazy_classes=0' /etc/php/7.2/fpm/php.ini
-sed -i '$aapc.lazy_functions=0' /etc/php/7.2/fpm/php.ini
+cp /etc/php/7.3/fpm/pool.d/www.conf /etc/php/7.3/fpm/pool.d/www.conf.bak
+cp /etc/php/7.3/cli/php.ini /etc/php/7.3/cli/php.ini.bak
+cp /etc/php/7.3/fpm/php.ini /etc/php/7.3/fpm/php.ini.bak
+cp /etc/php/7.3/fpm/php-fpm.conf /etc/php/7.3/fpm/php-fpm.conf.bak
+sed -i "s/;env\[HOSTNAME\] = /env[HOSTNAME] = /" /etc/php/7.3/fpm/pool.d/www.conf
+sed -i "s/;env\[TMP\] = /env[TMP] = /" /etc/php/7.3/fpm/pool.d/www.conf
+sed -i "s/;env\[TMPDIR\] = /env[TMPDIR] = /" /etc/php/7.3/fpm/pool.d/www.conf
+sed -i "s/;env\[TEMP\] = /env[TEMP] = /" /etc/php/7.3/fpm/pool.d/www.conf
+sed -i "s/;env\[PATH\] = /env[PATH] = /" /etc/php/7.3/fpm/pool.d/www.conf
+sed -i "s/pm.max_children = .*/pm.max_children = 240/" /etc/php/7.3/fpm/pool.d/www.conf
+sed -i "s/pm.start_servers = .*/pm.start_servers = 20/" /etc/php/7.3/fpm/pool.d/www.conf
+sed -i "s/pm.min_spare_servers = .*/pm.min_spare_servers = 10/" /etc/php/7.3/fpm/pool.d/www.conf
+sed -i "s/pm.max_spare_servers = .*/pm.max_spare_servers = 20/" /etc/php/7.3/fpm/pool.d/www.conf
+sed -i "s/;pm.max_requests = 500/pm.max_requests = 500/" /etc/php/7.3/fpm/pool.d/www.conf
+sed -i "s/output_buffering =.*/output_buffering = 'Off'/" /etc/php/7.3/cli/php.ini
+sed -i "s/max_execution_time =.*/max_execution_time = 1800/" /etc/php/7.3/cli/php.ini
+sed -i "s/max_input_time =.*/max_input_time = 3600/" /etc/php/7.3/cli/php.ini
+sed -i "s/post_max_size =.*/post_max_size = 10240M/" /etc/php/7.3/cli/php.ini
+sed -i "s/;upload_tmp_dir =.*/upload_tmp_dir = \/upload_tmp/" /etc/php/7.3/cli/php.ini
+sed -i "s/upload_max_filesize =.*/upload_max_filesize = 10240M/" /etc/php/7.3/cli/php.ini
+sed -i "s/max_file_uploads =.*/max_file_uploads = 100/" /etc/php/7.3/cli/php.ini
+sed -i "s/;date.timezone.*/date.timezone = Europe\/\Berlin/" /etc/php/7.3/cli/php.ini
+sed -i "s/;session.cookie_secure.*/session.cookie_secure = True/" /etc/php/7.3/cli/php.ini
+sed -i "s/;session.save_path =.*/session.save_path = \"N;700;\/usr\/local\/tmp\/sessions\"/" /etc/php/7.3/cli/php.ini
+sed -i '$aapc.enable_cli = 1' /etc/php/7.3/cli/php.ini
+sed -i "s/memory_limit = 128M/memory_limit = 512M/" /etc/php/7.3/fpm/php.ini
+sed -i "s/output_buffering =.*/output_buffering = 'Off'/" /etc/php/7.3/fpm/php.ini
+sed -i "s/max_execution_time =.*/max_execution_time = 1800/" /etc/php/7.3/fpm/php.ini
+sed -i "s/max_input_time =.*/max_input_time = 3600/" /etc/php/7.3/fpm/php.ini
+sed -i "s/post_max_size =.*/post_max_size = 10240M/" /etc/php/7.3/fpm/php.ini
+sed -i "s/;upload_tmp_dir =.*/upload_tmp_dir = \/upload_tmp/" /etc/php/7.3/fpm/php.ini
+sed -i "s/upload_max_filesize =.*/upload_max_filesize = 10240M/" /etc/php/7.3/fpm/php.ini
+sed -i "s/max_file_uploads =.*/max_file_uploads = 100/" /etc/php/7.3/fpm/php.ini
+sed -i "s/;date.timezone.*/date.timezone = Europe\/\Berlin/" /etc/php/7.3/fpm/php.ini
+sed -i "s/;session.cookie_secure.*/session.cookie_secure = True/" /etc/php/7.3/fpm/php.ini
+sed -i "s/;opcache.enable=.*/opcache.enable=1/" /etc/php/7.3/fpm/php.ini
+sed -i "s/;opcache.enable_cli=.*/opcache.enable_cli=1/" /etc/php/7.3/fpm/php.ini
+sed -i "s/;opcache.memory_consumption=.*/opcache.memory_consumption=128/" /etc/php/7.3/fpm/php.ini
+sed -i "s/;opcache.interned_strings_buffer=.*/opcache.interned_strings_buffer=8/" /etc/php/7.3/fpm/php.ini
+sed -i "s/;opcache.max_accelerated_files=.*/opcache.max_accelerated_files=10000/" /etc/php/7.3/fpm/php.ini
+sed -i "s/;opcache.revalidate_freq=.*/opcache.revalidate_freq=1/" /etc/php/7.3/fpm/php.ini
+sed -i "s/;opcache.save_comments=.*/opcache.save_comments=1/" /etc/php/7.3/fpm/php.ini
+sed -i "s/;session.save_path =.*/session.save_path = \"N;700;\/usr\/local\/tmp\/sessions\"/" /etc/php/7.3/fpm/php.ini
+sed -i "s/;emergency_restart_threshold =.*/emergency_restart_threshold = 10/" /etc/php/7.3/fpm/php-fpm.conf
+sed -i "s/;emergency_restart_interval =.*/emergency_restart_interval = 1m/" /etc/php/7.3/fpm/php-fpm.conf
+sed -i "s/;process_control_timeout =.*/process_control_timeout = 10s/" /etc/php/7.3/fpm/php-fpm.conf
+sed -i '$aapc.enabled=1' /etc/php/7.3/fpm/php.ini
+sed -i '$aapc.file_update_protection=2' /etc/php/7.3/fpm/php.ini
+sed -i '$aapc.optimization=0' /etc/php/7.3/fpm/php.ini
+sed -i '$aapc.shm_size=256M' /etc/php/7.3/fpm/php.ini
+sed -i '$aapc.include_once_override=0' /etc/php/7.3/fpm/php.ini
+sed -i '$aapc.shm_segments=1' /etc/php/7.3/fpm/php.ini
+sed -i '$aapc.ttl=7200' /etc/php/7.3/fpm/php.ini
+sed -i '$aapc.user_ttl=7200' /etc/php/7.3/fpm/php.ini
+sed -i '$aapc.gc_ttl=3600' /etc/php/7.3/fpm/php.ini
+sed -i '$aapc.num_files_hint=1024' /etc/php/7.3/fpm/php.ini
+sed -i '$aapc.enable_cli=0' /etc/php/7.3/fpm/php.ini
+sed -i '$aapc.max_file_size=5M' /etc/php/7.3/fpm/php.ini
+sed -i '$aapc.cache_by_default=1' /etc/php/7.3/fpm/php.ini
+sed -i '$aapc.use_request_time=1' /etc/php/7.3/fpm/php.ini
+sed -i '$aapc.slam_defense=0' /etc/php/7.3/fpm/php.ini
+sed -i '$aapc.mmap_file_mask=/usr/local/tmp/apc.XXXXXX' /etc/php/7.3/fpm/php.ini
+sed -i '$aapc.stat_ctime=0' /etc/php/7.3/fpm/php.ini
+sed -i '$aapc.canonicalize=1' /etc/php/7.3/fpm/php.ini
+sed -i '$aapc.write_lock=1' /etc/php/7.3/fpm/php.ini
+sed -i '$aapc.report_autofilter=0' /etc/php/7.3/fpm/php.ini
+sed -i '$aapc.rfc1867=0' /etc/php/7.3/fpm/php.ini
+sed -i '$aapc.rfc1867_prefix =upload_' /etc/php/7.3/fpm/php.ini
+sed -i '$aapc.rfc1867_name=APC_UPLOAD_PROGRESS' /etc/php/7.3/fpm/php.ini
+sed -i '$aapc.rfc1867_freq=0' /etc/php/7.3/fpm/php.ini
+sed -i '$aapc.rfc1867_ttl=3600' /etc/php/7.3/fpm/php.ini
+sed -i '$aapc.lazy_classes=0' /etc/php/7.3/fpm/php.ini
+sed -i '$aapc.lazy_functions=0' /etc/php/7.3/fpm/php.ini
 sed -i "s/09,39.*/# &/" /etc/cron.d/php
 (crontab -l ; echo "09,39 * * * * /usr/lib/php/sessionclean 2>&1") | crontab -u root -
 # sed -i '$atmpfs /tmp tmpfs defaults,noatime,nosuid,nodev,noexec,mode=1777 0 0' /etc/fstab
@@ -230,7 +232,7 @@ sed -i '$atmpfs /usr/local/tmp/sessions tmpfs defaults,uid=33,size=300M,noatime,
 ###make use of RAMDISK
 mount -a
 ###restart PHP and NGINX
-service php7.2-fpm restart
+service php7.3-fpm restart
 service nginx restart
 ###install MariaDB
 mariadbinfo
@@ -291,14 +293,14 @@ log_bin_index = /var/log/mysql/mariadb-bin.index
 expire_logs_days = 10
 max_binlog_size = 100M
 default_storage_engine = InnoDB
-innodb_buffer_pool_size = 256M
+innodb_buffer_pool_size = 1024M
 innodb_buffer_pool_instances = 1
 innodb_flush_log_at_trx_commit = 2
 innodb_log_buffer_size = 32M
 innodb_max_dirty_pages_pct = 90
 innodb_file_per_table = 1
 innodb_open_files = 400
-innodb_io_capacity = 400
+innodb_io_capacity = 4000
 innodb_flush_method = O_DIRECT
 character-set-server = utf8mb4
 collation-server = utf8mb4_general_ci
