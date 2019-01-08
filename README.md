@@ -3,10 +3,10 @@ The initial script (install-nextcloud.sh // install-nextcloud-debian.sh) will in
 
     Fail2Ban (Nextcloud and SSH jails)
     MariaDB 10.3
-    Nextcloud 15
+    Nextcloud 15 (latest)
     NGINX 1.15.8 TLSv.1.3
     OpenSSL 1.1.1
-    PHP 7.2
+    PHP 7.3
     Redis-Server
     self signed or Let's Encrypt SSL using the second script
     UFW (22, 80, 443)
@@ -20,10 +20,10 @@ Find out more information: <a href="https://www.c-rieger.de/nextcloud-using-one-
 Beyond that you will find additional scripts at /usr/local/src/install-nextcloud/
 
     fail2ban.sh
-    optimize.sh
+    optimize-debian.sh and optimize-ubuntu.sh
     restart.sh
     ssl-renewal.sh
-    upgrade.sh
+    upgrade-debian.sh and upgrade-ubuntu.sh
 
 to optimize and maintain your Ubuntu system easily.
 
