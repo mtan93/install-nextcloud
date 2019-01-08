@@ -6,7 +6,7 @@
 # Version 2.0 (AMD64)
 # Nextcloud 15
 # OpenSSL 1.1.1, TLSv1.3, NGINX 1.15.8, PHP 7.3
-# January, 8nd 2019
+# January, 8th 2019
 ################################################
 # Debian Stretch 9.x AMD64 - Nextcloud 15
 ################################################
