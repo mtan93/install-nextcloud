@@ -73,12 +73,12 @@ deb http://archive.ubuntu.com/ubuntu bionic main multiverse restricted universe
 deb http://archive.ubuntu.com/ubuntu bionic-security main multiverse restricted universe
 deb http://archive.ubuntu.com/ubuntu bionic-updates main multiverse restricted universe
 deb [arch=amd64] http://nginx.org/packages/mainline/ubuntu/ bionic nginx
+deb http://ppa.launchpad.net/ondrej/php/ubuntu bionic main
 deb-src [arch=amd64] http://nginx.org/packages/mainline/ubuntu/ bionic nginx
 deb [arch=amd64] http://ftp.hosteurope.de/mirror/mariadb.org/repo/10.3/ubuntu bionic main
 EOF
 wget http://nginx.org/keys/nginx_signing.key && apt-key add nginx_signing.key
 apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xF1656F24C74CD1D8
-add-apt-repository -y ppa:ondrej/php
 update_and_clean
 apt install software-properties-common zip unzip screen curl git wget ffmpeg libfile-fcntllock-perl -y
 apt remove nginx nginx-common nginx-full -y --allow-change-held-packages
