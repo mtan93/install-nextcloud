@@ -1,14 +1,14 @@
-i################################################
+################################################
 # Carsten Rieger IT-Services
 # https://www.c-rieger.de
 # https://github.com/riegercloud
-# INSTALL-NEXTCLOUD-DEBIAN.SH
-# Version 2.0beta (AMD64)
+# INSTALL-NEXTCLOUD.SH
+# Version 7.0beta (AMD64)
 # Nextcloud 15
-# OpenSSL 1.1.1, TLSv1.3, NGINX 1.15.8, PHP 7.3
-# January, 8nd 2019
+# OpenSSL 1.1.1, TLSv1.3, NGINX 1.15.8 PHP 7.3
+# January, 8th 2019
 ################################################
-# Debian Stretch 9.x AMD64 - Nextcloud 15
+# Ubuntu 18.04 LTS AMD64 - Nextcloud 15
 ################################################
 #!/bin/bash
 ### Set current NGINX Releaseversion
@@ -41,8 +41,8 @@ sed -i "s/rights\=\"none\" pattern\=\"XPS\"/rights\=\"read\|write\" pattern\=\"X
 }
 ###global function to scan Nextcloud data and generate an overview for fail2ban & ufw
 function nextcloud_scan_data() {
-su - www-data -s /bin/bash -c 'php /var/www/nextcloud/occ files:scan --all'
-su - www-data -s /bin/bash -c 'php /var/www/nextcloud/occ files:scan-app-data'
+sudo -u www-data php /var/www/nextcloud/occ files:scan --all
+sudo -u www-data php /var/www/nextcloud/occ files:scan-app-data
 fail2ban-client status nextcloud
 ufw status verbose
 }
@@ -65,31 +65,27 @@ clear
 }
 ### START ###
 cd /usr/local/src
-apt install apt-transport-https git wget gnupg2 dirmngr -y
+###prepare the server environment
+apt install gnupg2 wget -y
 mv /etc/apt/sources.list /etc/apt/sources.list.bak && touch /etc/apt/sources.list
 cat <<EOF >>/etc/apt/sources.list
-deb http://deb.debian.org/debian stretch main
-deb http://security.debian.org/debian-security stretch/updates main
-deb [arch=amd64] http://nginx.org/packages/mainline/debian/ stretch nginx
-deb-src [arch=amd64] http://nginx.org/packages/mainline/debian/ stretch nginx
-deb [arch=amd64] http://mirror2.hs-esslingen.de/mariadb/repo/10.3/debian stretch main
-deb https://packages.sury.org/php/ stretch main
+deb http://archive.ubuntu.com/ubuntu bionic main multiverse restricted universe
+deb http://archive.ubuntu.com/ubuntu bionic-security main multiverse restricted universe
+deb http://archive.ubuntu.com/ubuntu bionic-updates main multiverse restricted universe
+deb [arch=amd64] http://nginx.org/packages/mainline/ubuntu/ bionic nginx
+deb-src [arch=amd64] http://nginx.org/packages/mainline/ubuntu/ bionic nginx
+deb [arch=amd64] http://ftp.hosteurope.de/mirror/mariadb.org/repo/10.3/ubuntu bionic main
 EOF
-###prepare the server environment
-wget -O /etc/apt/trusted.gpg.d/php.gpg https://packages.sury.org/php/apt.gpg
 wget http://nginx.org/keys/nginx_signing.key && apt-key add nginx_signing.key
-apt-key adv --recv-keys --keyserver keyserver.ubuntu.com 0xF1656F24C74CD1D8
-###
+apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xF1656F24C74CD1D8
 update_and_clean
-###
 apt install software-properties-common zip unzip screen curl git wget ffmpeg libfile-fcntllock-perl -y
 apt remove nginx nginx-common nginx-full -y --allow-change-held-packages
 update_and_clean
 ###instal NGINX using TLSv1.3, OpenSSL 1.1.1
 mkdir /usr/local/src/nginx && cd /usr/local/src/nginx/
 apt install dpkg-dev -y && apt source nginx
-###
-cd /usr/local/src
+cd /usr/local/src && apt install git -y
 git clone https://github.com/openssl/openssl.git
 cd openssl && git checkout OpenSSL_1_1_1-stable
 cp /usr/local/src/install-nextcloud/rules.nginx /usr/local/src/nginx/nginx-$NGINXVER/debian/rules
@@ -97,9 +93,9 @@ sed -i "s/.*-Werror.*/# &/" /usr/local/src/nginx/nginx-$NGINXVER/auto/cc/gcc
 cd /usr/local/src/nginx/nginx-$NGINXVER/
 apt build-dep nginx -y && dpkg-buildpackage -b
 cd /usr/local/src/nginx/
-dpkg -i nginx_$NGINXVER*.deb
-###dpkg -i nginx_1.15.8-1~*.deb
+dpkg -i nginx_$NGINXVER-*.deb
 service nginx restart && apt-mark hold nginx
+# apt install nginx -y
 ###enable NGINX autostart
 systemctl enable nginx.service
 ### prepare the NGINX
@@ -142,8 +138,7 @@ include /etc/nginx/conf.d/*.conf;
 }
 EOF
 ###restart NGINX
-/usr/sbin/service nginx restart
-
+service nginx restart
 ###create folders
 mkdir -p /var/nc_data /var/www/letsencrypt /usr/local/tmp/cache /usr/local/tmp/sessions /usr/local/tmp/apc /upload_tmp
 ###apply permissions
@@ -151,8 +146,7 @@ chown -R www-data:www-data /upload_tmp /var/nc_data /var/www
 chown -R www-data:root /usr/local/tmp/sessions /usr/local/tmp/cache /usr/local/tmp/apc
 ###install PHP
 apt install php7.3-fpm php7.3-gd php7.3-mysql php7.3-curl php7.3-xml php7.3-zip php7.3-intl php7.3-mbstring php7.3-json php7.3-bz2 php7.3-ldap php-apcu imagemagick php-imagick -y
-
-
+###adjust PHP
 cp /etc/php/7.3/fpm/pool.d/www.conf /etc/php/7.3/fpm/pool.d/www.conf.bak
 cp /etc/php/7.3/cli/php.ini /etc/php/7.3/cli/php.ini.bak
 cp /etc/php/7.3/fpm/php.ini /etc/php/7.3/fpm/php.ini.bak
@@ -233,13 +227,11 @@ sed -i "s/09,39.*/# &/" /etc/cron.d/php
 sed -i '$atmpfs /usr/local/tmp/apc tmpfs defaults,uid=33,size=300M,noatime,nosuid,nodev,noexec,mode=1777 0 0' /etc/fstab
 sed -i '$atmpfs /usr/local/tmp/cache tmpfs defaults,uid=33,size=300M,noatime,nosuid,nodev,noexec,mode=1777 0 0' /etc/fstab
 sed -i '$atmpfs /usr/local/tmp/sessions tmpfs defaults,uid=33,size=300M,noatime,nosuid,nodev,noexec,mode=1777 0 0' /etc/fstab
-
 ###make use of RAMDISK
 mount -a
 ###restart PHP and NGINX
-/usr/sbin/service php7.3-fpm restart
-/usr/sbin/service nginx restart
-
+service php7.3-fpm restart
+service nginx restart
 ###install MariaDB
 mariadbinfo
 apt update && apt install mariadb-server -y
@@ -306,7 +298,7 @@ innodb_log_buffer_size = 32M
 innodb_max_dirty_pages_pct = 90
 innodb_file_per_table = 1
 innodb_open_files = 400
-innodb_io_capacity = 4000
+innodb_io_capacity = 400
 innodb_flush_method = O_DIRECT
 character-set-server = utf8mb4
 collation-server = utf8mb4_general_ci
@@ -344,7 +336,8 @@ echo ""
 echo "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
 echo ""
 ###restart MariaDB server andconnect to MariaDB
-/usr/sbin/service mysql restart && mysql -uroot <<EOF
+service mysql restart && mysql -uroot <<EOF
+###create Nextclouds DB and User
 CREATE DATABASE $NEXTCLOUDDBNAME CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
 CREATE USER $NEXTCLOUDDBUSER@localhost identified by '$NEXTCLOUDDBPASSWORD';
 GRANT ALL PRIVILEGES on $NEXTCLOUDDBNAME.* to $NEXTCLOUDDBUSER@localhost;
@@ -362,6 +355,7 @@ sed -i "s/unixsocketperm 700/unixsocketperm 770/" /etc/redis/redis.conf
 sed -i "s/# maxclients 10000/maxclients 512/" /etc/redis/redis.conf
 usermod -a -G redis www-data
 cp /etc/sysctl.conf /etc/sysctl.conf.bak && sed -i '$avm.overcommit_memory = 1' /etc/sysctl.conf
+#cp /etc/rc.local /etc/rc.local.bak && sed -i '$i \sysctl -w net.core.somaxconn=65535' /etc/rc.local
 ###install self signed certificates
 apt install ssl-cert -y
 ###prepare NGINX for Nextcloud and SSL
@@ -528,7 +522,7 @@ sed -i "s/server_name YOUR.DEDYN.IO;/server_name $(hostname);/" /etc/nginx/conf.
 ###create Nextclouds cronjob
 (crontab -u www-data -l ; echo "*/15 * * * * php -f /var/www/nextcloud/cron.php > /dev/null 2>&1") | crontab -u www-data -
 ###restart NGINX
-/usr/sbin/service nginx restart
+service nginx restart
 ###Download Nextclouds latest release and extract it
 wget https://download.nextcloud.com/server/releases/latest.tar.bz2
 tar -xjf latest.tar.bz2 -C /var/www
@@ -556,24 +550,23 @@ echo "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 echo ""
 echo "Your NEXTCLOUD will now be installed silently - please be patient ..."
 echo ""
-#su - www-data -s /bin/bash -c 'php /var/www/nextcloud/occ maintenance:install --database "mysql" --database-name "$NEXTCLOUDDBNAME"  --database-user "$NEXTCLOUDDBUSER" --database-pass "$NEXTCLOUDDBPASSWORD" --admin-user "$NEXTCLOUDADMINUSER" --admin-pass "$NEXTCLOUDADMINUSERPASSWORD" --data-dir "/var/nc_data"'
-su - www-data -s /bin/bash -c 'php /var/www/nextcloud/occ maintenance:install --database mysql --database-name '$NEXTCLOUDDBNAME' --database-user '$NEXTCLOUDDBUSER' --database-pass '$NEXTCLOUDDBPASSWORD' --admin-user '$NEXTCLOUDADMINUSER' --admin-pass '$NEXTCLOUDADMINUSERPASSWORD' --data-dir '/var/nc_data''
-###read and store the current hostname in lowercases
+sudo -u www-data php /var/www/nextcloud/occ maintenance:install --database "mysql" --database-name "$NEXTCLOUDDBNAME"  --database-user "$NEXTCLOUDDBUSER" --database-pass "$NEXTCLOUDDBPASSWORD" --admin-user "$NEXTCLOUDADMINUSER" --admin-pass "$NEXTCLOUDADMINUSERPASSWORD" --data-dir "/var/nc_data"
 declare -l YOURSERVERNAME
+###read and store the current hostname in lowercases
 YOURSERVERNAME=$(hostname)
-cp /var/www/nextcloud/config/config.php /var/www/nextcloud/config/config.php.bak
-su - www-data -s /bin/bash -c 'php /var/www/nextcloud/occ config:system:set trusted_domains 0 --value=$HOSTNAME'
-su - www-data -s /bin/bash -c 'php /var/www/nextcloud/occ config:system:set overwrite.cli.url --value=https://$HOSTNAME'
+sudo -u www-data cp /var/www/nextcloud/config/config.php /var/www/nextcloud/config/config.php.bak
+sudo -u www-data php /var/www/nextcloud/occ config:system:set trusted_domains 0 --value=$YOURSERVERNAME
+sudo -u www-data php /var/www/nextcloud/occ config:system:set overwrite.cli.url --value=https://$YOURSERVERNAME
+# sudo -u www-data sed -in 's/http:\/\/localhost/https:\/\/'$YOURSERVERNAME'/' /var/www/nextcloud/config/config.php
 echo ""
 echo "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
 ###backup of the effected file .user.ini
 cp /var/www/nextcloud/.user.ini /usr/local/src/.user.ini.bak
 ###apply Nextcloud optimizations
-sed -i "s/upload_max_filesize=.*/upload_max_filesize=10240M/" /var/www/nextcloud/.user.ini
-sed -i "s/post_max_size=.*/post_max_size=10240M/" /var/www/nextcloud/.user.ini
-sed -i "s/output_buffering=.*/output_buffering='Off'/" /var/www/nextcloud/.user.ini
-chown -R www-data:www-data /var/www
-su - www-data -s /bin/bash -c 'php /var/www/nextcloud/occ background:cron'
+sudo -u www-data sed -i "s/upload_max_filesize=.*/upload_max_filesize=10240M/" /var/www/nextcloud/.user.ini
+sudo -u www-data sed -i "s/post_max_size=.*/post_max_size=10240M/" /var/www/nextcloud/.user.ini
+sudo -u www-data sed -i "s/output_buffering=.*/output_buffering='Off'/" /var/www/nextcloud/.user.ini
+sudo -u www-data php /var/www/nextcloud/occ background:cron
 ###apply optimizations to Nextclouds global config.php
 sed -i '/);/d' /var/www/nextcloud/config/config.php
 cat <<EOF >>/var/www/nextcloud/config/config.php
@@ -614,7 +607,7 @@ array (
 'preview_max_scale_factor' => 1,
 'redis' =>
 array (
-'host' => '/var/run/redis/redis.sock',
+'host' => '/var/run/redis/redis-server.sock',
 'port' => 0,
 'timeout' => 0.0,
 ),
@@ -626,11 +619,10 @@ array (
 EOF
 ###remove leading whitespaces
 sed -i 's/^[ ]*//' /var/www/nextcloud/config/config.php
-chown -R www-data:www-data /var/www
 restart_all_services
 update_and_clean
 ###installfail2ban
-apt install inetutils-syslogd fail2ban -y
+apt install fail2ban -y
 ###create a fail2ban Nextcloud filter
 touch /etc/fail2ban/filter.d/nextcloud.conf
 cat <<EOF >/etc/fail2ban/filter.d/nextcloud.conf
@@ -656,7 +648,6 @@ logpath = /var/nc_data/nextcloud.log
 enabled = true
 EOF
 update_and_clean
-
 ###install ufw
 apt install ufw -y
 ###open firewall ports 80+443 for http(s)
@@ -670,12 +661,12 @@ ufw logging medium && ufw default deny incoming && ufw enable
 /usr/sbin/service ufw restart
 /usr/sbin/service fail2ban restart
 /usr/sbin/service redis-server restart
-su - www-data -s /bin/bash -c 'php /var/www/nextcloud/occ app:disable survey_client'
-su - www-data -s /bin/bash -c 'php /var/www/nextcloud/occ app:disable firstrunwizard'
-su - www-data -s /bin/bash -c 'php /var/www/nextcloud/occ app:enable admin_audit'
-su - www-data -s /bin/bash -c 'php /var/www/nextcloud/occ app:enable files_pdfviewer'
+sudo -u www-data php /var/www/nextcloud/occ app:disable survey_client
+sudo -u www-data php /var/www/nextcloud/occ app:disable firstrunwizard
+sudo -u www-data php /var/www/nextcloud/occ app:enable admin_audit
+sudo -u www-data php /var/www/nextcloud/occ app:enable files_pdfviewer
 ###clean up redis-server
-redis-cli -s /var/run/redis/redis.sock <<EOF
+redis-cli -s /var/run/redis/redis-server.sock <<EOF
 FLUSHALL
 quit
 EOF
@@ -688,20 +679,20 @@ echo "---------------------------------"
 echo "Press 'y' to issue optimizations."
 echo "---------------------------------"
 echo ""
-su - www-data -s /bin/bash -c 'php /var/www/nextcloud/occ db:add-missing-indices'
-su - www-data -s /bin/bash -c 'php /var/www/nextcloud/occ db:convert-filecache-bigint'
+sudo -u www-data php /var/www/nextcloud/occ db:add-missing-indices
+sudo -u www-data php /var/www/nextcloud/occ db:convert-filecache-bigint
 phpimagickexception
 nextcloud_scan_data
 restart_all_services
 ### issue the cron.php once
-su - www-data -s /bin/bash -c 'php /var/www/nextcloud/cron.php'
+sudo -u www-data php /var/www/nextcloud/cron.php
 clear
 echo ""
 echo "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
 echo ""
 echo " Open your browser and call your Nextcloud at"
 echo ""
-echo " https://$HOSTNAME"
+echo " https://$YOURSERVERNAME"
 echo ""
 echo "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
 ### CleanUp ###
