@@ -27,11 +27,14 @@ cp /var/www/nextcloud/config/config.php /var/www/nextcloud/config/config.php.ori
 ###global function to show an error message if the certificate request would fail
 function errorSSL() {
 clear
-echo "*** ERROR while requeting your certificate(s) ***"
+echo "!!! !!! !!! !!! !!! !!! !!! !!! !!! !!! !!! !!! !!!"
+echo "*** ERROR while requesting your certificate(s) ***"
 echo ""
 echo "Verify that both ports (80 + 443) are forwarded to this server!"
 echo "And verify, your dyndns points to your IP either!"
 echo "Then retry..."
+echo "!!! !!! !!! !!! !!! !!! !!! !!! !!! !!! !!! !!! !!!"
+echo ""
 }
 ###add the letsencrypt repository to the server
 add-apt-repository ppa:certbot/certbot -y
@@ -66,7 +69,6 @@ sed -i s/ssl_dhparam/\#ssl_dhparam/g /etc/nginx/ssl.conf
 ###adjust Nextclous config.php to the new domain name
 sudo -u www-data php /var/www/nextcloud/occ config:system:set trusted_domains 1 --value=$DYNDNSNAME
 sudo -u www-data php /var/www/nextcloud/occ config:system:set overwrite.cli.url --value=https://$DYNDNSNAME
-#sudo -u www-data sed -in 's/'$YOURSERVERNAME'/'$DYNDNSNAME'/' /var/www/nextcloud/config/config.php
 ###restart the cloud environment
 restart_all_services
 clear
