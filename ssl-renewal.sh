@@ -21,8 +21,8 @@ if [ -n "$result" ]; then
         /usr/sbin/service nginx stop
         /usr/sbin/service mysql restart
         /usr/sbin/service redis-server restart
-        /usr/sbin/service php7.2-fpm restart
+        /usr/sbin/service php7.3-fpm restart
         /usr/sbin/service nginx restart
 fi
-mail -s "Renewal - $(date +$CURRENT_TIME_FORMATE)" -a "FROM: Your Name <your@email.com>" your@email.com < /home/username/ssl-renewal.txt
+#mail -s "Renewal - $(date +$CURRENT_TIME_FORMATE)" -a "FROM: Your Name <your@email.com>" your@email.com < /home/username/ssl-renewal.txt
 exit 0
