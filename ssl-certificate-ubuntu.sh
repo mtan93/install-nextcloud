@@ -1,9 +1,7 @@
 #######################################################
 # Carsten Rieger IT-Services
-# SSL-CERTIFICATE.SH
-# Version 1.1
-# September, 20th, 2018
-# Version 2.0
+# SSL-CERTIFICATE-UBUNTU.SH
+# Version 2.1
 #######################################################
 #!/bin/bash
 ###global function to update and cleanup the environment
@@ -18,7 +16,7 @@ function restart_all_services() {
 /usr/sbin/service nginx restart
 /usr/sbin/service mysql restart
 /usr/sbin/service redis-server restart
-/usr/sbin/service php7.2-fpm restart
+/usr/sbin/service php7.3-fpm restart
 }
 ###global function to create backups of the effected files 
 function copy4SSL() {
@@ -78,5 +76,6 @@ echo " Call: https://$DYNDNSNAME and enjoy your Nextcloud"
 echo ""
 echo "++++++++++++++++++++++++++++++++++++++++++++++++++++"
 fi
-history -c && history -w
+### CleanUp ###
+cat /dev/null > ~/.bash_history && history -c && history -w
 exit 0
