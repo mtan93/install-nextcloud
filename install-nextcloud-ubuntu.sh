@@ -423,7 +423,7 @@ location ~ ^/(?:updater|ocs-provider)(?:\$|/) {
 try_files \$uri/ =404;
 index index.php;
 }
-location ~ \.(?:css|js|woff|svg|gif|png|html|ttf|ico|jpg|jpeg)\$ {
+location ~ \.(?:css|js|woff2?|svg|gif|png|html|ttf|ico|jpg|jpeg)\$ {
 try_files \$uri /index.php\$uri\$is_args\$args;
 access_log off;
 expires 360d;
