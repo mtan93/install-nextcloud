@@ -17,7 +17,7 @@ Requirements:
     Please remove already installed packages of NGINX, PHP, MariaDB and Redis first
     or start with a new server os!
 
-    apt purge <package> -y && apt autoremove -y
+    apt purge nginx mysql* redis* php* -y && apt autoremove -y
 
 Beyond that you will find additional scripts at /usr/local/src/install-nextcloud/
 
