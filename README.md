@@ -14,7 +14,8 @@ The initial script called install-nextcloud-ubuntu.sh or install-nextcloud-debia
 Requirements:
 
     Ubuntu 18.04 or Debian 9.6
-    Please remove already installed packages of NGINX, PHP, MariaDB and Redis first or start with a new server os!
+    Please remove already installed packages of NGINX, PHP, MariaDB and Redis first
+    or start with a new server os!
 
     apt purge <package> -y && apt autoremove -y
 
