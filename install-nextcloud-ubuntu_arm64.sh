@@ -128,7 +128,7 @@ open_file_cache_errors on;
 keepalive_timeout 65;
 reset_timedout_connection on;
 server_tokens off;
-resolver 208.67.322.222 208.67.320.220 valid=30s;
+resolver 208.67.222.222 208.67.220.220 valid=30s;
 resolver_timeout 5s;
 include /etc/nginx/conf.d/*.conf;
 }
