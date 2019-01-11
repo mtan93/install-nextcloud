@@ -287,14 +287,14 @@ log_bin_index = /var/log/mysql/mariadb-bin.index
 expire_logs_days = 10
 max_binlog_size = 100M
 default_storage_engine = InnoDB
-innodb_buffer_pool_size = 256M
+innodb_buffer_pool_size = 1024M
 innodb_buffer_pool_instances = 1
 innodb_flush_log_at_trx_commit = 2
 innodb_log_buffer_size = 32M
 innodb_max_dirty_pages_pct = 90
 innodb_file_per_table = 1
 innodb_open_files = 400
-innodb_io_capacity = 400
+innodb_io_capacity = 4000
 innodb_flush_method = O_DIRECT
 character-set-server = utf8mb4
 collation-server = utf8mb4_general_ci
@@ -398,8 +398,8 @@ deny all;
 }
 location ~ \.(?:flv|mp4|mov|m4a)\$ {
 mp4;
-mp4_buffer_size 100m;
-mp4_max_buffer_size 1024m;
+mp4_buffer_size 100M;
+mp4_max_buffer_size 1024M;
 fastcgi_split_path_info ^(.+\.php)(/.*)\$;
 include fastcgi_params;
 include php_optimization.conf;
@@ -417,7 +417,7 @@ location ~ ^/(?:updater|ocs-provider)(?:\$|/) {
 try_files \$uri/ =404;
 index index.php;
 }
-location ~ \.(?:css|js|woff|svg|gif|png|html|ttf|ico|jpg|jpeg)\$ {
+location ~ \.(?:css|js|woff2?|svg|gif|png|html|ttf|ico|jpg|jpeg)\$ {
 try_files \$uri /index.php\$uri\$is_args\$args;
 access_log off;
 expires 360d;
@@ -450,7 +450,7 @@ ssl_trusted_certificate /etc/ssl/certs/ssl-cert-snakeoil.pem;
 ssl_session_timeout 1d;
 ssl_session_cache shared:SSL:50m;
 ssl_session_tickets off;
-ssl_protocols TLSv1.2 TLSv1.3;
+ssl_protocols TLSv1.3 TLSv1.2;
 ssl_ciphers 'TLS-CHACHA20-POLY1305-SHA256:TLS-AES-256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA512:DHE-RSA-AES256-GCM-SHA512:ECDHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-SHA384';
 ssl_ecdh_curve secp521r1:secp384r1:prime256v1;
 ssl_prefer_server_ciphers on;
