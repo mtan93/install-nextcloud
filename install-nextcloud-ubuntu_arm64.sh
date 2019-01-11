@@ -11,6 +11,8 @@
 # Ubuntu 18.04 LTS ARM64 - Nextcloud 15
 ################################################
 #!/bin/bash
+### Set current NGINX Releaseversion
+NGINXVER="1.15.8"
 ###global function to update and cleanup the environment
 function update_and_clean() {
 apt update
