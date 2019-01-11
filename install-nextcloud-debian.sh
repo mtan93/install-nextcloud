@@ -92,7 +92,7 @@ apt install dpkg-dev -y && apt source nginx
 cd /usr/local/src
 git clone https://github.com/openssl/openssl.git
 cd openssl && git checkout OpenSSL_1_1_1-stable
-cp /usr/local/src/install-nextcloud/rules.nginx /usr/local/src/nginx/nginx-$NGINXVER/debian/rules
+cp /usr/local/src/install-nextcloud/maintainance/rules.nginx /usr/local/src/nginx/nginx-$NGINXVER/debian/rules
 sed -i "s/.*-Werror.*/# &/" /usr/local/src/nginx/nginx-$NGINXVER/auto/cc/gcc
 cd /usr/local/src/nginx/nginx-$NGINXVER/
 apt build-dep nginx -y && dpkg-buildpackage -b
