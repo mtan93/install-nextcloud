@@ -3,10 +3,10 @@
 # https://www.c-rieger.de
 # https://github.com/riegercloud
 # INSTALL-NEXTCLOUD-DEBIAN.SH
-# Version 2.0 (AMD64)
+# Version 2.1 (AMD64)
 # Nextcloud 15
 # OpenSSL 1.1.1, TLSv1.3, NGINX 1.15.8, PHP 7.3
-# January, 8th 2019
+# January, 17th 2019
 ################################################
 # Debian Stretch 9.x AMD64 - Nextcloud 15
 ################################################
@@ -492,7 +492,7 @@ add_header X-Permitted-Cross-Domain-Policies none;
 add_header X-Content-Type-Options "nosniff" always;
 add_header X-XSS-Protection "1; mode=block" always;
 add_header Referrer-Policy "no-referrer" always;
-add_header Feature-Policy "geolocation 'self'";
+add_header Feature-Policy "accelerometer 'none'; autoplay 'self'; geolocation 'none'; midi 'none'; notifications 'self'; push 'self'; sync-xhr 'self'; microphone 'self'; camera 'self'; magnetometer 'none'; gyroscope 'none'; speaker 'self'; vibrate 'self'; fullscreen 'self'; payment 'none'; usb 'none'";
 EOF
 touch /etc/nginx/optimization.conf
 cat <<EOF >/etc/nginx/optimization.conf
