@@ -462,7 +462,7 @@ ssl_ecdh_curve secp521r1:secp384r1:prime256v1;
 ssl_prefer_server_ciphers on;
 ssl_stapling on;
 ssl_stapling_verify on;
-ssl_early_data on;
+#ssl_early_data on;
 EOF
 touch /etc/nginx/proxy.conf
 cat <<EOF >/etc/nginx/proxy.conf
@@ -473,7 +473,7 @@ proxy_set_header X-Forwarded-Protocol \$scheme;
 proxy_set_header X-Forwarded-For \$remote_addr;
 proxy_set_header X-Forwarded-Port \$server_port;
 proxy_set_header X-Forwarded-Server \$host;
-proxy_set_header Early-Data \$ssl_early_data;
+#proxy_set_header Early-Data \$ssl_early_data;
 proxy_connect_timeout 3600;
 proxy_send_timeout 3600;
 proxy_read_timeout 3600;
