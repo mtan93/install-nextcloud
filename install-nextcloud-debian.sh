@@ -74,6 +74,7 @@ deb [arch=amd64] http://nginx.org/packages/mainline/debian/ stretch nginx
 deb-src [arch=amd64] http://nginx.org/packages/mainline/debian/ stretch nginx
 deb [arch=amd64] http://mirror2.hs-esslingen.de/mariadb/repo/10.3/debian stretch main
 deb https://packages.sury.org/php/ stretch main
+deb http://ftp.debian.org/debian stretch-backports main
 EOF
 ###prepare the server environment
 wget -O /etc/apt/trusted.gpg.d/php.gpg https://packages.sury.org/php/apt.gpg
