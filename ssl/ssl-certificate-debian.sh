@@ -34,10 +34,10 @@ echo "And verify, your dyndns points to your IP properly!"
 echo "Then retry..."
 }
 ###add the letsencrypt repository to the server
-add-apt-repository ppa:certbot/certbot -y
+#add-apt-repository ppa:certbot/certbot -y
 update_and_clean
 ###install letsencrypt
-apt install letsencrypt -y
+apt install certbot -t stretch-backports -y
 ###ensure lower cases
 declare -l DYNDNSNAME
 declare -l YOURSERVERNAME
