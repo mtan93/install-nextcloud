@@ -388,7 +388,7 @@ return 301 \$scheme://\$host/remote.php/dav;
 }
 client_max_body_size 10240M;
 location / {
-rewrite ^ /index.php$request_uri;
+rewrite ^ /index.php\$request_uri;
 }
 location ~ ^/(?:build|tests|config|lib|3rdparty|templates|data)/ {
 deny all;
@@ -418,7 +418,7 @@ try_files \$uri/ =404;
 index index.php;
 }
 location ~ \.(?:css|js|woff2?|svg|gif|png|html|ttf|ico|jpg|jpeg)\$ {
-try_files $uri /index.php$request_uri;
+try_files \$uri /index.php\$request_uri;
 access_log off;
 expires 360d;
 }
