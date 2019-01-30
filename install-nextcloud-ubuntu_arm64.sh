@@ -3,10 +3,10 @@
 # https://www.c-rieger.de
 # https://github.com/riegercloud
 # INSTALL-NEXTCLOUD.SH
-# Version 7.0 (ARM64)
+# Version 7.1 (ARM64)
 # Nextcloud 15
 # OpenSSL 1.1.1, TLSv1.3, NGINX 1.15.8, PHP7.3
-# January, 11th 2019
+# January, 30th 2019
 ################################################
 # Ubuntu 18.04 LTS ARM64 - Nextcloud 15
 ################################################
@@ -136,10 +136,10 @@ EOF
 ###restart NGINX
 service nginx restart
 ###create folders
-mkdir -p /var/nc_data /var/www/letsencrypt /usr/local/tmp/cache /usr/local/tmp/sessions /usr/local/tmp/apc
+mkdir -p /var/nc_data /var/www/letsencrypt /usr/local/tmp/sessions /usr/local/tmp/apc
 ###apply permissions
 chown -R www-data:www-data /var/nc_data /var/www
-chown -R www-data:root /usr/local/tmp/sessions /usr/local/tmp/cache /usr/local/tmp/apc
+chown -R www-data:root /usr/local/tmp/sessions /usr/local/tmp/apc
 ###install PHP
 apt install php7.3-fpm php7.3-gd php7.3-mysql php7.3-curl php7.3-xml php7.3-zip php7.3-intl php7.3-mbstring php7.3-json php7.3-bz2 php7.3-ldap php-apcu imagemagick php-imagick -y
 ###adjust PHP
@@ -219,7 +219,6 @@ sed -i "s/09,39.*/# &/" /etc/cron.d/php
 # sed -i '$atmpfs /tmp tmpfs defaults,noatime,nosuid,nodev,noexec,mode=1777 0 0' /etc/fstab
 # sed -i '$atmpfs /var/tmp tmpfs defaults,noatime,nosuid,nodev,noexec,mode=1777 0 0' /etc/fstab
 sed -i '$atmpfs /usr/local/tmp/apc tmpfs defaults,uid=33,size=300M,noatime,nosuid,nodev,noexec,mode=1777 0 0' /etc/fstab
-sed -i '$atmpfs /usr/local/tmp/cache tmpfs defaults,uid=33,size=300M,noatime,nosuid,nodev,noexec,mode=1777 0 0' /etc/fstab
 sed -i '$atmpfs /usr/local/tmp/sessions tmpfs defaults,uid=33,size=300M,noatime,nosuid,nodev,noexec,mode=1777 0 0' /etc/fstab
 ###make use of RAMDISK
 mount -a
