@@ -146,9 +146,9 @@ EOF
 /usr/sbin/service nginx restart
 
 ###create folders
-mkdir -p /var/nc_data /var/www/letsencrypt /usr/local/tmp/cache /usr/local/tmp/sessions /usr/local/tmp/apc /upload_tmp
+mkdir -p /var/nc_data /var/www/letsencrypt /usr/local/tmp/cache /usr/local/tmp/sessions /usr/local/tmp/apc
 ###apply permissions
-chown -R www-data:www-data /upload_tmp /var/nc_data /var/www
+chown -R www-data:www-data /var/nc_data /var/www
 chown -R www-data:root /usr/local/tmp/sessions /usr/local/tmp/cache /usr/local/tmp/apc
 ###install PHP
 apt install php7.3-fpm php7.3-gd php7.3-mysql php7.3-curl php7.3-xml php7.3-zip php7.3-intl php7.3-mbstring php7.3-json php7.3-bz2 php7.3-ldap php-apcu imagemagick php-imagick -y
@@ -172,7 +172,6 @@ sed -i "s/output_buffering =.*/output_buffering = 'Off'/" /etc/php/7.3/cli/php.i
 sed -i "s/max_execution_time =.*/max_execution_time = 1800/" /etc/php/7.3/cli/php.ini
 sed -i "s/max_input_time =.*/max_input_time = 3600/" /etc/php/7.3/cli/php.ini
 sed -i "s/post_max_size =.*/post_max_size = 10240M/" /etc/php/7.3/cli/php.ini
-sed -i "s/;upload_tmp_dir =.*/upload_tmp_dir = \/upload_tmp/" /etc/php/7.3/cli/php.ini
 sed -i "s/upload_max_filesize =.*/upload_max_filesize = 10240M/" /etc/php/7.3/cli/php.ini
 sed -i "s/max_file_uploads =.*/max_file_uploads = 100/" /etc/php/7.3/cli/php.ini
 sed -i "s/;date.timezone.*/date.timezone = Europe\/\Berlin/" /etc/php/7.3/cli/php.ini
@@ -184,7 +183,6 @@ sed -i "s/output_buffering =.*/output_buffering = 'Off'/" /etc/php/7.3/fpm/php.i
 sed -i "s/max_execution_time =.*/max_execution_time = 1800/" /etc/php/7.3/fpm/php.ini
 sed -i "s/max_input_time =.*/max_input_time = 3600/" /etc/php/7.3/fpm/php.ini
 sed -i "s/post_max_size =.*/post_max_size = 10240M/" /etc/php/7.3/fpm/php.ini
-sed -i "s/;upload_tmp_dir =.*/upload_tmp_dir = \/upload_tmp/" /etc/php/7.3/fpm/php.ini
 sed -i "s/upload_max_filesize =.*/upload_max_filesize = 10240M/" /etc/php/7.3/fpm/php.ini
 sed -i "s/max_file_uploads =.*/max_file_uploads = 100/" /etc/php/7.3/fpm/php.ini
 sed -i "s/;date.timezone.*/date.timezone = Europe\/\Berlin/" /etc/php/7.3/fpm/php.ini
